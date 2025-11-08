@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer Lomba</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid #000000;
+        }
+
+        .logo-container {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            background-color: white;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .theme-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000000;
+            text-align: right;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .competition-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: #666666;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .time-settings {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            align-items: center;
+        }
+
+        .time-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .time-input-group label {
+            font-size: 16px;
+            color: #666666;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .time-input-group input {
+            width: 80px;
+            padding: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            border: 3px solid #000000;
+            border-radius: 10px;
+            background-color: #f5f5f5;
+            font-family: 'Courier New', monospace;
+        }
+
+        .time-input-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: #ffffff;
+        }
+
+        .btn-set {
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #8b5cf6;
+            color: white;
+            margin-top: 24px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-set:hover {
+            background-color: #7c3aed;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        .timer-container {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .time-box {
+            text-align: center;
+        }
+
+        .time-display {
+            background: #f5f5f5;
+            border: 3px solid #000000;
+            border-radius: 20px;
+            padding: 30px 40px;
+            min-width: 150px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .time-number {
+            font-size: 96px;
+            font-weight: bold;
+            color: #000000;
+            line-height: 1;
+            font-family: 'Courier New', monospace;
+        }
+
+        .time-label {
+            font-size: 20px;
+            color: #666666;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .separator {
+            font-size: 72px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-start {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .btn-start:hover:not(:disabled) {
+            background-color: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-pause {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .btn-pause:hover:not(:disabled) {
+            background-color: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-reset {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-fullscreen {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #3b82f6;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .btn-fullscreen:hover {
+            background-color: #2563eb;
+            transform: scale(1.1);
+        }
+
+        .warning {
+            background-color: #fef2f2;
+            border: 3px solid #ef4444;
+            color: #991b1b;
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 22px;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        .time-up {
+            background-color: #ef4444;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 28px;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+                font-size: 18px;
+            }
+
+            .theme-title {
+                text-align: center;
+                font-size: 20px;
+            }
+
+            .competition-title {
+                font-size: 32px;
+            }
+
+            .time-number {
+                font-size: 64px;
+            }
+
+            .timer-container {
+                gap: 15px;
+            }
+
+            .time-display {
+                padding: 20px 25px;
+                min-width: 100px;
+            }
+
+            .time-settings {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .controls {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <div class="logo">
+                <img src="Copy of UKDW (PNG).png" alt="Logo 1">
+            </div>
+            <div class="logo">
+                <img src="LOGO HMTI.png" alt="Logo 2">
+            </div>
+            <div class="logo">
+                <img src="kandiddat 8.png" alt="Logo 3">
+            </div>
+        </div>
+        <div class="theme-title">
+           Code Together, Grow Together
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="competition-title">COMPETITIVE PROGRAMMING</h1>
+        <p class="subtitle" id="durationText">Waktu Pengerjaan: 2 Jam</p>
+
+        <div class="time-settings">
+            <div class="time-input-group">
+                <label for="inputHours">JAM</label>
+                <input type="number" id="inputHours" min="0" max="23" value="2">
+            </div>
+            <div class="time-input-group">
+                <label for="inputMinutes">MENIT</label>
+                <input type="number" id="inputMinutes" min="0" max="59" value="0">
+            </div>
+            <div class="time-input-group">
+                <label for="inputSeconds">DETIK</label>
+                <input type="number" id="inputSeconds" min="0" max="59" value="0">
+            </div>
+            <button class="btn-set" onclick="setCustomTime()">ATUR WAKTU</button>
+        </div>
+
+        <div class="timer-container">
+            <div class="time-box">
+                <div class="time-display">
+                    <div class="time-number" id="hours">02</div>
+                </div>
+                <div class="time-label">JAM</div>
+            </div>
+
+            <div class="separator">:</div>
+
+            <div class="time-box">
+                <div class="time-display">
+                    <div class="time-number" id="minutes">00</div>
+                </div>
+                <div class="time-label">MENIT</div>
+            </div>
+
+            <div class="separator">:</div>
+
+            <div class="time-box">
+                <div class="time-display">
+                    <div class="time-number" id="seconds">00</div>
+                </div>
+                <div class="time-label">DETIK</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-start" id="toggleBtn" onclick="toggleTimer()">
+                MULAI
+            </button>
+            <button class="btn btn-reset" onclick="resetTimer()">
+                RESET
+            </button>
+        </div>
+
+        <div id="message"></div>
+    </div>
+
+    <button class="btn-fullscreen" onclick="toggleFullscreen()">
+        <svg width="30" height="30" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 11-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15 13.586V12a1 1 0 011-1z"/>
+        </svg>
+    </button>
+
+    <script>
+        var initialTime = 2 * 60 * 60;
+        var timeLeft = initialTime;
+        var isRunning = false;
+        var interval;
+        var hasPlayedReminder = {
+            '3600': false,
+            '1800': false,
+            '600': false,
+            '60': false
+        };
+
+        function speak(text) {
+            // Stop any ongoing speech
+            speechSynthesis.cancel();
+            
+            var utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'id-ID';
+            utterance.rate = 0.85;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            
+            // Add a small delay to ensure speech is ready
+            setTimeout(function() {
+                speechSynthesis.speak(utterance);
+            }, 100);
+        }
+
+        function playReminder(time) {
+            var key = String(time);
+            if (!hasPlayedReminder[key]) {
+                hasPlayedReminder[key] = true;
+                
+                if (time === 3600) {
+                    speak('Perhatian! Waktu pengerjaan tersisa satu jam lagi');
+                } else if (time === 1800) {
+                    speak('Perhatian! Waktu pengerjaan tersisa tiga puluh menit lagi');
+                } else if (time === 600) {
+                    speak('Perhatian! Waktu pengerjaan tersisa sepuluh menit lagi');
+                } else if (time === 60) {
+                    speak('Perhatian! Waktu pengerjaan tersisa satu menit lagi');
+                }
+            }
+        }
+
+        function updateDisplay() {
+            var hours = Math.floor(timeLeft / 3600);
+            var minutes = Math.floor((timeLeft % 3600) / 60);
+            var seconds = timeLeft % 60;
+
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+            if (isRunning) {
+                if (timeLeft === 3600) {
+                    playReminder(3600);
+                } else if (timeLeft === 1800) {
+                    playReminder(1800);
+                } else if (timeLeft === 600) {
+                    playReminder(600);
+                } else if (timeLeft === 60) {
+                    playReminder(60);
+                } else if (timeLeft <= 10 && timeLeft > 0) {
+                    // Countdown for last 10 seconds
+                    speak(String(timeLeft));
+                } else if (timeLeft === 0) {
+                    speak('Waktu telah habis! terima kasih');
+                }
+            }
+
+            var messageDiv = document.getElementById('message');
+            if (timeLeft <= 300 && timeLeft > 0) {
+                messageDiv.innerHTML = '<div class="warning">WAKTU HAMPIR HABIS!</div>';
+            } else if (timeLeft === 0) {
+                messageDiv.innerHTML = '<div class="time-up">WAKTU HABIS!</div>';
+                stopTimer();
+            } else {
+                messageDiv.innerHTML = '';
+            }
+        }
+
+        function toggleTimer() {
+            isRunning = !isRunning;
+            var btn = document.getElementById('toggleBtn');
+
+            if (isRunning) {
+                btn.innerHTML = 'JEDA';
+                btn.className = 'btn btn-pause';
+                disableInputs(true);
+                
+                interval = setInterval(function() {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        stopTimer();
+                    }
+                }, 1000);
+            } else {
+                btn.innerHTML = 'MULAI';
+                btn.className = 'btn btn-start';
+                clearInterval(interval);
+            }
+        }
+
+        function stopTimer() {
+            isRunning = false;
+            clearInterval(interval);
+            var btn = document.getElementById('toggleBtn');
+            btn.innerHTML = 'MULAI';
+            btn.className = 'btn btn-start';
+            disableInputs(false);
+        }
+
+        function resetTimer() {
+            stopTimer();
+            timeLeft = initialTime;
+            hasPlayedReminder = {
+                '3600': false,
+                '1800': false,
+                '600': false,
+                '60': false
+            };
+            updateDisplay();
+            updateDurationText();
+        }
+
+        function setCustomTime() {
+            if (isRunning) {
+                alert('Hentikan timer terlebih dahulu sebelum mengatur waktu!');
+                return;
+            }
+
+            var hours = parseInt(document.getElementById('inputHours').value) || 0;
+            var minutes = parseInt(document.getElementById('inputMinutes').value) || 0;
+            var seconds = parseInt(document.getElementById('inputSeconds').value) || 0;
+
+            if (hours === 0 && minutes === 0 && seconds === 0) {
+                alert('Waktu tidak boleh 0!');
+                return;
+            }
+
+            initialTime = (hours * 3600) + (minutes * 60) + seconds;
+            timeLeft = initialTime;
+            
+            // Reset reminders based on new time
+            hasPlayedReminder = {
+                '3600': false,
+                '1800': false,
+                '600': false,
+                '60': false
+            };
+
+            updateDisplay();
+            updateDurationText();
+        }
+
+        function updateDurationText() {
+            var hours = Math.floor(initialTime / 3600);
+            var minutes = Math.floor((initialTime % 3600) / 60);
+            var seconds = initialTime % 60;
+
+            var parts = [];
+            if (hours > 0) parts.push(hours + ' Jam');
+            if (minutes > 0) parts.push(minutes + ' Menit');
+            if (seconds > 0) parts.push(seconds + ' Detik');
+
+            document.getElementById('durationText').textContent = 'Waktu Pengerjaan: ' + parts.join(' ');
+        }
+
+        function disableInputs(disabled) {
+            document.getElementById('inputHours').disabled = disabled;
+            document.getElementById('inputMinutes').disabled = disabled;
+            document.getElementById('inputSeconds').disabled = disabled;
+            document.querySelector('.btn-set').disabled = disabled;
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        updateDisplay();
+        updateDurationText();
+    </script>
+</body>
+</html>
